@@ -1,0 +1,76 @@
+GOLDEN PROJECT(VOICE ASSISTANT)-
+CODE:
+import subprocess
+import sys
+import importlib
+
+# Function to check and install required packages
+def install_and_import(package, alias=None):
+    try:
+        if alias:
+            importlib.import_module(alias)
+        else:
+            importlib.import_module(package)
+    except ImportError:
+        try:
+            subprocess.check_call([sys.executable, "-m", "pip", "install", package])
+            if alias:
+                importlib.import_module(alias)
+            else:
+                importlib.import_module(package)
+        except subprocess.CalledProcessError as e:
+            print(f"Error installing {package}: {e}")
+            print(f"Please install {package} manually and try again.")
+            sys.exit(1)
+
+# Ensure necessary packages are installed
+install_and_import('speechrecognition', 'speech_recognition')
+install_and_import('pyttsx3')
+install_and_import('pyaudio')
+
+import pyttsx3
+import speech_recognition as sr
+import time
+
+# Initialize text-to-speech engine
+engine = pyttsx3.init()
+
+def speak(text):
+    engine.say(text)
+    engine.runAndWait()
+
+def process_command(command):
+    command = command.lower()
+    if "hello" in command:
+        speak("Hello! How can I assist you?")
+    elif "what's the time" in command or "what is the time" in command:
+        current_time = time.strftime("%I:%M %p")
+        speak(f"The current time is {current_time}")
+    elif "goodbye" in command:
+        speak("Goodbye! Have a great day!")
+        exit()
+    else:
+        speak("Sorry, I didn't understand that.")
+
+def listen_for_commands():
+    recognizer = sr.Recognizer()
+
+    with sr.Microphone() as source:
+        print("Listening for commands...")
+        recognizer.adjust_for_ambient_noise(source)
+        audio = recognizer.listen(source)
+
+    try:
+        command = recognizer.recognize_google(audio)
+        print("User command:", command)
+        process_command(command)
+    except sr.UnknownValueError:
+        speak("Could not understand audio")
+    except sr.RequestError as e:
+        speak(f"Could not request results; {e}")
+
+if __name__ == "__main__":
+    speak("Hello! I'm your personal assistant. How can I assist you?")
+    while True:
+        listen_for_commands()
+
