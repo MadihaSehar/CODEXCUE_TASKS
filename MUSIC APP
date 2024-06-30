@@ -1,0 +1,43 @@
+Music App Build a music player application in Python that will play music from your audio library
+CODE:
+import pygame
+import os
+from tkinter import Tk, Button, Label, filedialog, messagebox
+
+def play_music():
+    file_path = filedialog.askopenfilename(filetypes=[("Audio Files", "*.mp3 *.wav")])
+    if file_path:
+        try:
+            pygame.mixer.music.load(file_path)
+            pygame.mixer.music.play()
+        except pygame.error:
+            messagebox.showerror("File Error", "The selected file could not be played.")
+
+def stop_music():
+    pygame.mixer.music.stop()
+
+def pause_music():
+    pygame.mixer.music.pause()
+
+def unpause_music():
+    pygame.mixer.music.unpause()
+
+pygame.init()
+
+# Initialize the GUI application
+root = Tk()
+root.title("Music Player")
+root.geometry("300x200")
+root.configure(bg="#333333")
+
+# Add a label for the title
+Label(root, text="Music Player", font=("Helvetica", 20), fg="#ffffff", bg="#333333").pack(pady=20)
+
+# Add buttons for controlling music
+Button(root, text="Play Music", command=play_music, width=15, bg="#444444", fg="#ffffff", bd=0).pack(pady=5)
+Button(root, text="Stop Music", command=stop_music, width=15, bg="#444444", fg="#ffffff", bd=0).pack(pady=5)
+Button(root, text="Pause Music", command=pause_music, width=15, bg="#444444", fg="#ffffff", bd=0).pack(pady=5)
+Button(root, text="Unpause Music", command=unpause_music, width=15, bg="#444444", fg="#ffffff", bd=0).pack(pady=5)
+
+root.mainloop()
+pygame.quit()
