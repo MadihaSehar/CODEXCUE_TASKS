@@ -1,0 +1,37 @@
+CALCULATOR CODE:
+TASK 1:
+
+
+
+
+https://github.com/MadihaSehar/CODEXCUE_TASKS/assets/147022919/c21c6483-d8ca-40f3-b1d3-64f4e3dd7eb2
+
+
+URL SHORTER 
+TASK2:
+
+
+https://github.com/MadihaSehar/CODEXCUE_TASKS/assets/147022919/3ad53957-d211-4f1e-b75e-b7c3d8541bb3
+
+
+MUSIC PLAYER
+TASK3:
+
+
+https://github.com/MadihaSehar/CODEXCUE_TASKS/assets/147022919/52a37e72-68c3-4d9f-a201-87e034cebeaf
+
+
+PLAGARISM CHECKER(GOLDEN PROJECT)
+TASK 4:
+
+
+
+https://github.com/MadihaSehar/CODEXCUE_TASKS/assets/147022919/0845e827-3bf5-4983-824c-0fd4e8a125dd
+
+
+
+VOICE ASSISTANT(GOLDEN PROJECT)
+TASK 5:
+
+https://github.com/MadihaSehar/CODEXCUE_TASKS/assets/147022919/b0a91d13-8487-4b18-9906-4e3375b82108
+
