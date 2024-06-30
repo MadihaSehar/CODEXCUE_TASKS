@@ -1,0 +1,110 @@
+GOLDEN PROJECT
+Plagiarism Checker: Develop a plagiarism detection tool that compares text documents for similarity,
+using natural language processing libraries like NLTK or spaCy.
+CODE:
+import subprocess
+import sys
+import importlib
+
+# Function to check and install required packages
+def install_and_import(package, alias=None):
+    try:
+        if alias:
+            importlib.import_module(alias)
+        else:
+            importlib.import_module(package)
+    except ImportError:
+        try:
+            subprocess.check_call([sys.executable, "-m", "pip", "install", package])
+            if alias:
+                importlib.import_module(alias)
+            else:
+                importlib.import_module(package)
+        except subprocess.CalledProcessError as e:
+            print(f"Error installing {package}: {e}")
+            print(f"Please install {package} manually and try again.")
+            sys.exit(1)
+
+# Ensure necessary packages are installed
+install_and_import('nltk')
+install_and_import('scikit-learn', 'sklearn')
+install_and_import('tkinter', 'tk')
+
+# Download NLTK resources (if not already downloaded)
+import nltk
+nltk.download('punkt')
+nltk.download('stopwords')
+nltk.download('wordnet')
+
+# Import other required modules
+import tkinter as tk
+from tkinter import ttk, scrolledtext, messagebox
+from nltk.tokenize import word_tokenize
+from nltk.corpus import stopwords
+from nltk.stem import WordNetLemmatizer
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+
+class PlagiarismCheckerApp:
+    def __init__(self, master):
+        self.master = master
+        self.master.title("Plagiarism Checker")
+        self.master.geometry("600x500")
+        self.master.configure(bg='#f0f0f0')
+        self.create_widgets()
+
+    def create_widgets(self):
+        style = ttk.Style()
+        style.configure('TButton', font=('Helvetica', 12), padding=10)
+        style.configure('TLabel', font=('Helvetica', 12), background='#f0f0f0')
+        
+        self.label1 = ttk.Label(self.master, text="Enter Original Text:")
+        self.label1.grid(row=0, column=0, padx=10, pady=10, sticky="w")
+        self.original_text = scrolledtext.ScrolledText(self.master, width=60, height=10, wrap=tk.WORD, font=("Helvetica", 10))
+        self.original_text.grid(row=1, column=0, padx=10, pady=5, columnspan=2)
+
+        self.label2 = ttk.Label(self.master, text="Enter Candidate Text:")
+        self.label2.grid(row=2, column=0, padx=10, pady=10, sticky="w")
+        self.candidate_text = scrolledtext.ScrolledText(self.master, width=60, height=10, wrap=tk.WORD, font=("Helvetica", 10))
+        self.candidate_text.grid(row=3, column=0, padx=10, pady=5, columnspan=2)
+
+        self.check_button = ttk.Button(self.master, text="Check Plagiarism", command=self.check_plagiarism)
+        self.check_button.grid(row=4, column=0, padx=10, pady=10, columnspan=2)
+
+    def preprocess_text(self, text):
+        tokens = word_tokenize(text.lower())
+        stop_words = set(stopwords.words('english'))
+        filtered_tokens = [word for word in tokens if word not in stop_words]
+        lemmatizer = WordNetLemmatizer()
+        lemmatized_tokens = [lemmatizer.lemmatize(word) for word in filtered_tokens]
+        preprocessed_text = ' '.join(lemmatized_tokens)
+        return preprocessed_text
+
+    def calculate_similarity(self, text1, text2):
+        preprocessed_text1 = self.preprocess_text(text1)
+        preprocessed_text2 = self.preprocess_text(text2)
+
+        vectorizer = TfidfVectorizer()
+        tfidf_matrix = vectorizer.fit_transform([preprocessed_text1, preprocessed_text2])
+
+        similarity_score = cosine_similarity(tfidf_matrix[0], tfidf_matrix[1])[0][0]
+        return similarity_score
+
+    def check_plagiarism(self):
+        original_text = self.original_text.get("1.0", tk.END)
+        candidate_text = self.candidate_text.get("1.0", tk.END)
+
+        similarity_score = self.calculate_similarity(original_text, candidate_text)
+
+        if similarity_score >= 0.7:  # Adjust threshold as needed
+            messagebox.showinfo("Plagiarism Check", f"The texts are similar with a similarity score of {similarity_score:.2f}. Possible plagiarism detected!")
+        else:
+            messagebox.showinfo("Plagiarism Check", f"The texts are dissimilar with a similarity score of {similarity_score:.2f}. No plagiarism detected.")
+
+def main():
+    root = tk.Tk()
+    app = PlagiarismCheckerApp(root)
+    root.mainloop()
+
+if __name__ == "__main__":
+    main()
